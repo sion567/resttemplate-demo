@@ -4,30 +4,25 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
        default-autowire="byName" default-lazy-init="true">
 
-    <!--方式一、使用jdk的实现-->
-    <bean id="ky.requestFactory" class="org.springframework.http.client.SimpleClientHttpRequestFactory">
-        <property name="readTimeout" value="10000"/>
-        <property name="connectTimeout" value="5000"/>
-    </bean>
+    <!--方式一、使用jdk的URI实现-->
+    <bean id="jdkRequestFactory" class="org.springframework.http.client.SimpleClientHttpRequestFactory" />
+    <!--方式二、使用httpclient的实现-->
+    <bean id="httpClientRequestFactory" class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory" />
+    <!--方式三、使用netty的实现-->
+    <bean id="nettyRequestFactory" class="org.springframework.http.client.Netty4ClientHttpRequestFactory" />
+
 
     <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
-        <constructor-arg ref="ky.requestFactory"/>
-        <!--
-        <property name="messageConverters">
-            <list>
-                <bean class="org.springframework.http.converter.FormHttpMessageConverter"/>
-                <bean class="org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter"/>
-                <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
-                <bean class="org.springframework.http.converter.StringHttpMessageConverter">
-                    <property name="supportedMediaTypes">
-                        <list>
-                            <value>text/plain;charset=UTF-8</value>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-        -->
+        <constructor-arg ref="httpClientRequestFactory"/>
+    </bean>
+
+
+    <!--方式、异步httpclient的实现-->
+    <bean id="asyncClientHttpRequestFactory"
+          class="org.springframework.http.client.HttpComponentsAsyncClientHttpRequestFactory" />
+
+    <bean id="aysncRestTemplate" class="org.springframework.web.client.AsyncRestTemplate">
+        <constructor-arg ref="asyncClientHttpRequestFactory"/>
     </bean>
 
 </beans>

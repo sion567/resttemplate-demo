@@ -20,9 +20,7 @@ public class RESTClient {
 
 
     public static void main(String[] args) {
-        ApplicationContext factory=new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
-
-        RestTemplate restTemplate = (RestTemplate) factory.getBean("restTemplate");
+        RestTemplate restTemplate =new RestTemplate();
         System.out.println("[foo1]>>" + (restTemplate.getForObject(_url_ + "foo1", String.class)));
         System.out.println("[foo2]>>" + (restTemplate.getForObject(_url_ + "foo2?name=huahua", String.class)));
         System.out.println("[foo3]>>" + (restTemplate.getForObject(_url_ + "foo3/caocao", String.class)));

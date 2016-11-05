@@ -24,8 +24,24 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>        
-
+        </dependency>
+        <!-- httpclient begin -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${http.client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient-cache</artifactId>
+            <version>${http.client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>${http.client.version}</version>
+        </dependency>
+        <!-- httpclient end -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -76,6 +92,7 @@
         <unitils.version>3.4.2</unitils.version>
         <ehcache.core.version>2.6.10</ehcache.core.version>
         <guava.version>18.0</guava.version>
+        <http.client.version>4.5.2</http.client.version>
         <start-class>cc.sion567.rest.sample.Application</start-class>
         <project.build.name>rest-demo</project.build.name>
     </properties>
