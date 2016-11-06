@@ -1,5 +1,6 @@
 package com.rest.demo;
 
+import cc.sion567.rest.sample.vo.User;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -8,6 +9,7 @@ import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.web.client.AsyncRestTemplate;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +17,7 @@ import java.util.Map;
  * Created by h2g on 2016/11/5.
  */
 public class AsyncRESTClient {
-    final static String _url_ = "http://127.0.0.1:8080/aysnc/";
+    final static String _url_ = "http://localhost:8080/aysnc/";
 
 
     public static void main(String[] args) {
@@ -44,13 +46,24 @@ public class AsyncRESTClient {
             System.out.println("I'm bee..."+j);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<String>(headers);
+        HttpEntity<User> entity = new HttpEntity<User>(headers);
 
-        Map<String,String> vars = new HashMap<String,String>();
-        vars.put("name","huahua");
-        ListenableFuture<ResponseEntity<String>> future3 = restTemplate.postForEntity(_url_ + "doo", entity, String.class, vars);
+//        Map<String,String> vars = Collections.singletonMap("user.name","huahua");
+        User u = new User();
+        u.setName("huahua");
+        ListenableFuture<ResponseEntity<String>> future3 = restTemplate.postForEntity(_url_ + "doo1", entity, String.class, u);
         future3.addCallback(callBack);
+        ListenableFuture<ResponseEntity<String>> future4 = restTemplate.postForEntity(_url_ + "doo2", entity, String.class, u);
+        future4.addCallback(callBack);
+
+
+
+        ListenableFuture<ResponseEntity<String>> future5 = restTemplate.getForEntity(_url_ + "too1/caocao", String.class);
+        future5.addCallback(callBack);
+        ListenableFuture<ResponseEntity<String>> future6 = restTemplate.getForEntity(_url_ + "too2/caocaocao", String.class);
+        future6.addCallback(callBack);
+
+
 
 
     }
