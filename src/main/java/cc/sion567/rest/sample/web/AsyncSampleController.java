@@ -4,13 +4,16 @@ import cc.sion567.rest.sample.vo.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.WebAsyncTask;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Enumeration;
 import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-@RequestMapping(value = "/aysnc")
-public class SampleController2 {
+@RequestMapping(value = "/async")
+public class AsyncSampleController {
 
     @RequestMapping("/foo1")
     public Callable<String> foo1(){
@@ -40,7 +43,7 @@ public class SampleController2 {
                 return "hello world<1>";
             }
         };
-        return new WebAsyncTask<String>(1000, callable);//将异步处理的超时时间设为1s
+        return new WebAsyncTask<String>(1000, callable);
     }
 
     //https://github.com/spring-projects/spring-mvc-showcase
@@ -89,7 +92,6 @@ public class SampleController2 {
         return "Handled ex: " + ex.getMessage();
     }
 
-
     @RequestMapping(value = "/too1/{name}")
     public Callable<String> too1(@PathVariable String name)   {
         System.out.println("too1......");
@@ -106,4 +108,32 @@ public class SampleController2 {
         System.out.println("too2......");
         return "hello "+name;
     }
+
+    @RequestMapping(value = "/test",method = RequestMethod.POST)
+    public Callable<String> test(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("test....");
+
+        Enumeration paramNames = request.getParameterNames();
+        while (paramNames.hasMoreElements()) {
+            String paramName = (String) paramNames.nextElement();
+
+            String[] paramValues = request.getParameterValues(paramName);
+            if (paramValues.length == 1) {
+                String paramValue = paramValues[0];
+                if (paramValue.length() != 0) {
+                    System.out.println("参数：" + paramName + "=" + paramValue);
+                }
+            }
+        }
+
+        return new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                TimeUnit.SECONDS.sleep(3);
+                return "hello test";
+            }
+        };
+
+    }
+
 }

@@ -1,14 +1,18 @@
 package com.rest.demo;
 
+import cc.sion567.rest.sample.vo.Rate;
 import com.google.common.collect.Maps;
 import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,7 +20,7 @@ import java.util.Map;
  */
 public class RESTClient {
 
-    final static String _url_ = "http://localhost:8080/";
+    final static String _url_ = "http://127.0.0.1:8080/";
 
 
     public static void main(String[] args) {
@@ -25,7 +29,7 @@ public class RESTClient {
         System.out.println("[foo2]>>" + (restTemplate.getForObject(_url_ + "foo2?name=huahua", String.class)));
         System.out.println("[foo3]>>" + (restTemplate.getForObject(_url_ + "foo3/caocao", String.class)));
         Map<String, String> vars = Collections.singletonMap("name", "caocao");
-        System.out.println("[foo4]>>" + (restTemplate.getForObject(_url_ + "foo3/{name}", String.class,vars)));
+        System.out.println("[foo4]>>" + (restTemplate.getForObject(_url_ + "foo3/{name}", String.class, vars)));
 
 //http://blog.csdn.net/luccs624061082/article/details/40893963
         System.out.println("===========");
@@ -33,26 +37,35 @@ public class RESTClient {
         map.put("name", "abc");
         System.out.println("[do1]>>" + (restTemplate.postForObject(_url_ + "do1", null, String.class, map)));
         System.out.println("[do1]>>" + (restTemplate.postForObject(_url_ + "do1?name=abc", null, String.class)));
-        System.out.println("[do2]>>" + (restTemplate.postForObject(_url_ + "do2", null, String.class, map)));
+//        System.out.println("[do2]>>" + (restTemplate.postForObject(_url_ + "do2", null, String.class, map)));
 
-        HttpHeaders headers = new HttpHeaders();
-        // 设置Accept表示浏览器支持的MIME类型,此处意思是要返回的类型
-        headers.setAccept(MediaType.parseMediaTypes(MediaType.APPLICATION_JSON_VALUE));
-        //置ContentType标明数据是JSON数据,否则报415(Unsupported Media Type),必须和REST接口的RequestMapping的ContentType对应
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<String>(headers);
+        System.out.println("[do1]>>" + (restTemplate.exchange(_url_ + "do1", HttpMethod.POST, new HttpEntity<String>(new HttpHeaders()), String.class, "AAAA")).getBody());
 
-        System.out.println("[do1]>>" + (restTemplate.exchange(_url_ + "do1", HttpMethod.POST, entity, String.class, "AAAA")).getBody());
+        HttpHeaders headers_json = new HttpHeaders();
+        headers_json.setAccept(MediaType.parseMediaTypes(MediaType.APPLICATION_JSON_VALUE));
+        headers_json.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Object> requestEntity_json = new HttpEntity<Object>("{\"name\":\"ABCDEFG\"}", headers_json);
 
-        HttpEntity<Object> requestEntity1 = new HttpEntity<Object>("ABCDEFG", headers);
-        HttpEntity<Object> requestEntity2 = new HttpEntity<Object>("{\"name\":\"ABCDEFG\"}", headers);
-
-        System.out.println("[do3]>>" + (restTemplate.exchange(_url_ + "do3", HttpMethod.POST, requestEntity1, String.class)).getBody());
-        System.out.println("[do4]>>" + (restTemplate.exchange(_url_ + "do4", HttpMethod.POST, requestEntity2, String.class)).getBody());
+        System.out.println("[do3]>>" + (restTemplate.exchange(_url_ + "do3", HttpMethod.POST, new HttpEntity<Object>("ABCDEFG", new HttpHeaders()), String.class)).getBody());
+        System.out.println("[do4]>>" + (restTemplate.exchange(_url_ + "do4", HttpMethod.POST, requestEntity_json, String.class)).getBody());
 
 
 //        RequestEntity<String> requestEntity = new RequestEntity<String>(headers, HttpMethod.POST, URI.create("/proto/read"));
-
+        System.out.println("test object.....");
+        //step1 error
+//        ResponseEntity<? extends ArrayList<Rate>> responseEntity = restTemplate.getForEntity(_url_ + "testObject", (Class<? extends ArrayList<Rate>>) ArrayList.class);
+//        for(Rate r : responseEntity.getBody()){
+//            System.out.println(r.getCode());
+//        }
+        //step2
+        ResponseEntity<List<Rate>> rateResponse =
+                restTemplate.exchange(_url_+"testObject",
+                        HttpMethod.GET, null, new ParameterizedTypeReference<List<Rate>>() {
+                        });
+        List<Rate> list2 = rateResponse.getBody();
+        for(Rate r : list2){
+            System.out.println(r.getRate());
+        }
     }
 
 

@@ -17,7 +17,7 @@ import java.util.Map;
  * Created by h2g on 2016/11/5.
  */
 public class AsyncRESTClient {
-    final static String _url_ = "http://localhost:8080/aysnc/";
+    final static String _url_ = "http://192.168.23.220:8080/async/";
 
 
     public static void main(String[] args) {
@@ -45,16 +45,16 @@ public class AsyncRESTClient {
         for(int j=0;j<50;j++)
             System.out.println("I'm bee..."+j);
 
-        HttpHeaders headers = new HttpHeaders();
-        HttpEntity<User> entity = new HttpEntity<User>(headers);
-
-//        Map<String,String> vars = Collections.singletonMap("user.name","huahua");
         User u = new User();
         u.setName("huahua");
-        ListenableFuture<ResponseEntity<String>> future3 = restTemplate.postForEntity(_url_ + "doo1", entity, String.class, u);
+
+//        Map<String,String> vars = Collections.singletonMap("user.name","huahua");
+
+        ListenableFuture<ResponseEntity<String>> future3 = restTemplate.postForEntity(_url_ + "doo1", new HttpEntity<User>(u, new HttpHeaders()), String.class);
         future3.addCallback(callBack);
-        ListenableFuture<ResponseEntity<String>> future4 = restTemplate.postForEntity(_url_ + "doo2", entity, String.class, u);
+        ListenableFuture<ResponseEntity<String>> future4 = restTemplate.postForEntity(_url_ + "doo2", new HttpEntity<User>(u, new HttpHeaders()), String.class);
         future4.addCallback(callBack);
+
 
 
 
@@ -63,8 +63,11 @@ public class AsyncRESTClient {
         ListenableFuture<ResponseEntity<String>> future6 = restTemplate.getForEntity(_url_ + "too2/caocaocao", String.class);
         future6.addCallback(callBack);
 
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<User> entity = new HttpEntity<User>(headers);
 
-
+        ListenableFuture<ResponseEntity<String>> futureTest = restTemplate.postForEntity(_url_ + "test",new HttpEntity<User>(u, new HttpHeaders()), String.class, u);
+        futureTest.addCallback(callBack);
 
     }
 }

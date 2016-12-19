@@ -1,8 +1,6 @@
 package cc.sion567.rest.sample.vo;
 
-/**
- * Created by hgg on 2016/11/5.
- */
+
 public class User {
     private String name;
 
